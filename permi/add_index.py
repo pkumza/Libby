@@ -10,7 +10,7 @@ def add_status_1():
     status .ASCENDING
     :return: result string
     """
-    conn = pymongo.MongoClient('localhost', '27017')
+    conn = pymongo.MongoClient('localhost', 27017)
     db = conn['lib-detect']
     packages = db.get_collection('packages')
     result = packages.create_index([('apk', pymongo.ASCENDING),('depth', pymongo.ASCENDING)])
