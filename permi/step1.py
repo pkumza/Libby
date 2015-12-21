@@ -58,8 +58,13 @@ def run(pnset, vp):
     conn = pymongo.MongoClient('localhost', 27017)
     print "Mongo Connected"
     db = conn.get_database("lib-detect")
-    package = db.get_collection("packages")
-
+    packages = db.get_collection("packages")
+    current_apk = ""
+    for package in packages.find().sort([("apk", pymongo.ASCENDING), ("depth", pymongo.ASCENDING)]):
+        print package['path']
+        if current_apk != "" and current_apk != package['apk']:
+            break;
+        current_apk = package['apk']
 
 if __name__ == '__main__':
     pnset = tgst5_to_pnset()
