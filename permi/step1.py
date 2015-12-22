@@ -62,6 +62,7 @@ def package_parent(package_name):
 def run(pnset, vp):
     conn = pymongo.MongoClient('localhost', 27017)
     print "Mongo Connected"
+    out = open('out.txt', 'w')
     db = conn.get_database("lib-detect")
     packages = db.get_collection("packages")
     # Init
@@ -74,8 +75,12 @@ def run(pnset, vp):
     # non_lib_permission_num = 0
 
     # Loop
+    cnt = 0
     for package in packages.find().sort([("apk", pymongo.ASCENDING), ("depth", pymongo.ASCENDING)]):
-        print package['path']
+        # print package['path']
+        if cnt % 1000 == 0:
+            print cnt
+        cnt += 1
         if current_apk != "" and current_apk != package['apk']:
             for path in path_dict:
                 if path_dict[path] == 'L':
@@ -90,7 +95,6 @@ def run(pnset, vp):
                         if api_num not in vp:
                             continue
                         non_lib_permission_call += len(vp[api_num]) * dict_dict[path][api]
-            out = open('out.txt', 'w')
             out.write(str(lib_permission_call)+',' + str(non_lib_permission_call) +'\n');
 
             # init
@@ -115,7 +119,7 @@ def run(pnset, vp):
         if package_parent(package['path']) in path_dict:
             path_dict[package_parent(package['path'])] = 'R'    # 如果不是leaf，则定义为R。
         current_apk = package['apk']
-
+    out.close()
 
 if __name__ == '__main__':
     pnset = tgst5_to_pnset()
