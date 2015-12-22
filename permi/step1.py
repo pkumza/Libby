@@ -54,17 +54,68 @@ def tagged_dict_to_vp():
     结束
 """
 
+
+def package_parent(package_name):
+    return '/'.join(package_name.split('/')[:-1])
+
+
 def run(pnset, vp):
     conn = pymongo.MongoClient('localhost', 27017)
     print "Mongo Connected"
     db = conn.get_database("lib-detect")
     packages = db.get_collection("packages")
+    # Init
     current_apk = ""
+    path_dict = {}  # path 的 dict, key是 path， value是 状态 L代表lib， C代表custom code 的叶子， R代表不确定, T代表L的子节点
+    dict_dict = {}  # api_dict 的 dict。 key是path， value是 package 的 api_dict
+    lib_permission_call = 0
+    # lib_permission_num = 0
+    non_lib_permission_call = 0
+    # non_lib_permission_num = 0
+
+    # Loop
     for package in packages.find().sort([("apk", pymongo.ASCENDING), ("depth", pymongo.ASCENDING)]):
         print package['path']
         if current_apk != "" and current_apk != package['apk']:
-            break;
+            for path in path_dict:
+                if path_dict[path] == 'L':
+                    for api in dict_dict[path]:
+                        api_num = int(api)
+                        if api_num not in vp:
+                            continue
+                        lib_permission_call += len(vp[api_num]) * dict_dict[path][api]
+                if path_dict[path] == 'C':
+                    for api in dict_dict[path]:
+                        api_num = int(api)
+                        if api_num not in vp:
+                            continue
+                        non_lib_permission_call += len(vp[api_num]) * dict_dict[path][api]
+            out = open('out.txt', 'w')
+            out.write(str(lib_permission_call)+',' + str(non_lib_permission_call) +'\n');
+
+            # init
+            lib_permission_call = 0
+            non_lib_permission_call = 0
+            path_dict.clear()
+            dict_dict.clear()
+
+        if package_parent(package['path']) in path_dict and path_dict[package_parent(package['path'])] == 'L':
+            path_dict[package['path']] = 'T'
+            continue
+        if package_parent(package['path']) in path_dict and path_dict[package_parent(package['path'])] == 'T':
+            path_dict[package['path']] = 'T'
+            continue
+        dict_dict[package['path']] = package['api_dict']
+        for lib_package_name in pnset:
+            if lib_package_name in package['path']:
+                path_dict[package['path']] = 'L'
+                break
+        else:
+            path_dict[package['path']] = 'C'        # 这个package人为是custom的（且为leaf）。
+        if path_dict[package_parent(package['path'])] == 'C':
+            path_dict[package_parent(package['path'])] = 'R'    # 如果不是leaf，则定义为R。
         current_apk = package['apk']
+
 
 if __name__ == '__main__':
     pnset = tgst5_to_pnset()
