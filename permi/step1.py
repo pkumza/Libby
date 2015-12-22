@@ -83,11 +83,11 @@ def run(pnset, vp):
             print cnt
         cnt += 1
         if package['depth'] == 0:
-            for api in dict_dict[package['path']]:
+            for api in package['api_dict']:
                 api_num = int(api)
                 if api_num not in vp:
                     continue
-                total_permission_call += len(vp[api_num]) * dict_dict[path][api]
+                total_permission_call += len(vp[api_num]) * package['api_dict'][api]
 
         if current_apk != "" and current_apk != package['apk']:
             for path in path_dict:
