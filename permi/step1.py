@@ -72,6 +72,7 @@ def run(pnset, vp):
     lib_permission_call = 0
     # lib_permission_num = 0
     non_lib_permission_call = 0
+    total_permission_call = 0
     # non_lib_permission_num = 0
 
     # Loop
@@ -81,6 +82,13 @@ def run(pnset, vp):
         if cnt % 1000 == 0:
             print cnt
         cnt += 1
+        if package['depth'] == 0:
+            for api in dict_dict[package['path']]:
+                api_num = int(api)
+                if api_num not in vp:
+                    continue
+                total_permission_call += len(vp[api_num]) * dict_dict[path][api]
+
         if current_apk != "" and current_apk != package['apk']:
             for path in path_dict:
                 if path_dict[path] == 'L':
@@ -89,13 +97,14 @@ def run(pnset, vp):
                         if api_num not in vp:
                             continue
                         lib_permission_call += len(vp[api_num]) * dict_dict[path][api]
+                        """
                 if path_dict[path] == 'C':
                     for api in dict_dict[path]:
                         api_num = int(api)
                         if api_num not in vp:
                             continue
-                        non_lib_permission_call += len(vp[api_num]) * dict_dict[path][api]
-            out.write(str(lib_permission_call)+',' + str(non_lib_permission_call) +'\n');
+                        non_lib_permission_call += len(vp[api_num]) * dict_dict[path][api]"""
+            out.write(str(lib_permission_call)+',' + str(total_permission_call) + '\n')
 
             # init
             lib_permission_call = 0
