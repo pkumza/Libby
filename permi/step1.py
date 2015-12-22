@@ -71,7 +71,7 @@ def run(pnset, vp):
     dict_dict = {}  # api_dict 的 dict。 key是path， value是 package 的 api_dict
     lib_permission_call = 0
     # lib_permission_num = 0
-    non_lib_permission_call = 0
+    # non_lib_permission_call = 0
     total_permission_call = 0
     # non_lib_permission_num = 0
 
@@ -108,7 +108,8 @@ def run(pnset, vp):
 
             # init
             lib_permission_call = 0
-            non_lib_permission_call = 0
+            total_permission_call = 0
+            # non_lib_permission_call = 0
             path_dict.clear()
             dict_dict.clear()
 
