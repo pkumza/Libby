@@ -112,7 +112,7 @@ def run(pnset, vp):
                 break
         else:
             path_dict[package['path']] = 'C'        # 这个package人为是custom的（且为leaf）。
-        if path_dict[package_parent(package['path'])] == 'C':
+        if package_parent(package['path']) in path_dict:
             path_dict[package_parent(package['path'])] = 'R'    # 如果不是leaf，则定义为R。
         current_apk = package['apk']
 
