@@ -85,14 +85,14 @@ def run(pnset, vp):
             print cnt
         cnt += 1
 
-        if current_apk != "" and current_apk != package['apk']:
+        if package['apk'] != "" and package['apk'] != package['apk']:
             for path in path_dict:
                 if path_dict[path] == 'L':
                     for api in dict_dict[path]:
                         api_num = int(api)
                         if api_num not in vp:
                             continue
-                        if current_apk == "/home/ubuntu/lib-detector/decoded/Atbs.iTpms.apk":
+                        if package['apk'] == "/home/ubuntu/lib-detector/decoded/Atbs.iTpms.apk":
                             print len(vp[api_num]) * dict_dict[path][api]
                             print api
                         lib_permission_call += len(vp[api_num]) * dict_dict[path][api]
@@ -104,9 +104,9 @@ def run(pnset, vp):
                             continue
                         non_lib_permission_call += len(vp[api_num]) * dict_dict[path][api]"""
             if lib_permission_call > total_permission_call:
-                out.write(str(lib_permission_call) + current_apk + '!!!!!!\n')
+                out.write(str(lib_permission_call) + package['apk'] + '!!!!!!\n')
             else:
-                out.write(str(lib_permission_call) + current_apk + '\n')
+                out.write(str(lib_permission_call) + package['apk'] + '\n')
 
             # init
             lib_permission_call = 0
@@ -116,18 +116,18 @@ def run(pnset, vp):
             dict_dict.clear()
 
         if package['depth'] == 0:
-            if current_apk == "/home/ubuntu/lib-detector/decoded/Atbs.iTpms.apk":
+            if package['apk'] == "/home/ubuntu/lib-detector/decoded/Atbs.iTpms.apk":
                 print package['api_dict']
             for api in package['api_dict']:
                 api_num = int(api)
                 if api_num not in vp:
                     continue
                 total_permission_call += len(vp[api_num]) * package['api_dict'][api]
-                if current_apk == "/home/ubuntu/lib-detector/decoded/Atbs.iTpms.apk":
+                if package['apk'] == "/home/ubuntu/lib-detector/decoded/Atbs.iTpms.apk":
                     print len(vp[api_num]) * package['api_dict'][api]
                     print api
                 out.write(str(total_permission_call) + ',')
-            if current_apk == "/home/ubuntu/lib-detector/decoded/Atbs.iTpms.apk":
+            if package['apk'] == "/home/ubuntu/lib-detector/decoded/Atbs.iTpms.apk":
                 print " "
 
         if package_parent(package['path']) in path_dict and path_dict[package_parent(package['path'])] == 'L':
