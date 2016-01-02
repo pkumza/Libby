@@ -104,7 +104,7 @@ def run(pnset, vp):
                         if api_num not in vp:
                             continue
                         non_lib_permission_call += len(vp[api_num]) * dict_dict[path][api]"""
-            out.write(str(lib_permission_call)+'\n' + str(total_permission_call) + ',')
+            out.write(str(lib_permission_call)+'\n' + current_apk + ',' + str(total_permission_call) + ',')
 
             # init
             lib_permission_call = 0
