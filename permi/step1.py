@@ -77,6 +77,8 @@ def run(pnset, vp):
 
     # Loop
     cnt = 0
+    pre_total_permission_call = 0
+
     for package in packages.find().sort([("apk", pymongo.ASCENDING), ("depth", pymongo.ASCENDING)]):
         # print package['path']
         if cnt % 1000 == 0:
@@ -104,7 +106,11 @@ def run(pnset, vp):
                         if api_num not in vp:
                             continue
                         non_lib_permission_call += len(vp[api_num]) * dict_dict[path][api]"""
-            out.write(str(lib_permission_call)+'\n' + current_apk + ',' + str(total_permission_call) + ',')
+            if lib_permission_call > pre_total_permission_call:
+                out.write(str(lib_permission_call)+'  !!!!!!\n' + current_apk + ',' + str(total_permission_call) + ',')
+            else:
+                out.write(str(lib_permission_call)+'\n' + current_apk + ',' + str(total_permission_call) + ',')
+            pre_total_permission_call = total_permission_call
 
             # init
             lib_permission_call = 0
